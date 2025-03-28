@@ -1,0 +1,70 @@
+#taskList {
+  padding: 0;
+  list-style: none;
+  margin-top: 10px;
+  width: 80%;
+}
+
+#taskList li {
+  display: flex;
+  justify-content: space-between; /* Canh nội dung trái - nút phải */
+  align-items: center;
+  background: #f8f9fa;
+  padding: 10px 20px; /* Thêm padding để đẩy nội dung ra hai bên */
+  margin: 5px 0;
+  border-radius: 5px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+#taskList li button {
+  background: #f8f9fa;
+  color: black;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#taskList li button:hover {
+  background: rgb(104, 104, 104);
+}
+
+/* Ban đầu ẩn nhóm nút (edit & remove) */
+#taskList li .btn-group {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Khi hover li, hiển thị nhóm nút */
+#taskList li:hover .btn-group {
+  opacity: 1;
+}
+
+/* Các nút chỉnh sửa inline hiển thị theo hàng ngang */
+.edit-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+/* Nút Lưu: nền đỏ, viền đỏ, chữ trắng */
+.btn-save {
+  background-color: red !important;
+  border: 1px solid red !important;
+  color: white !important;
+  transition: background-color 0.3s ease;
+}
+.btn-save:hover {
+  background-color: darkred !important;
+}
+
+.btn-cancel {
+  background-color: white !important;
+  border: 1px solid #ccc !important;
+  color: black !important;
+  transition: background-color 0.3s ease;
+}
+.btn-cancel:hover {
+  background-color: #f0f0f0 !important;
+}
