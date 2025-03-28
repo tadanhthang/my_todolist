@@ -209,11 +209,17 @@ function checkTaskNotifications() {
 setInterval(checkTaskNotifications, 1000);
 
 // Yêu cầu quyền thông báo
-if (Notification.permission !== "granted") {
-  Notification.requestPermission().then(function (permission) {
-    console.log("Notification permission:", permission);
-  });
+if (Notification.permission === "granted") {
+    new Notification("Đến giờ thực hiện công việc!", {
+        body: "Bạn có một công việc cần thực hiện.",
+        icon: "icon.png" // Đổi thành đường dẫn icon phù hợp
+    });
+} else if (Notification.permission !== "denied") {
+    Notification.requestPermission().then(permission => {
+        if (permission === "granted") {
+            new Notification("Thông báo đã được bật!");
+        }
+    });
 }
-
 // Hàm kiểm tra thông báo (đã định nghĩa ở trên)
 setInterval(checkTaskNotifications, 60000);
