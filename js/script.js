@@ -209,17 +209,19 @@ function checkTaskNotifications() {
 setInterval(checkTaskNotifications, 1000);
 
 // Yêu cầu quyền thông báo
-if (Notification.permission === "granted") {
-    new Notification("Đến giờ thực hiện công việc!", {
-        body: "Bạn có một công việc cần thực hiện.",
-        icon: "icon.png" // Đổi thành đường dẫn icon phù hợp
-    });
-} else if (Notification.permission !== "denied") {
-    Notification.requestPermission().then(permission => {
-        if (permission === "granted") {
-            new Notification("Thông báo đã được bật!");
-        }
-    });
+// Kiểm tra xem trình duyệt có hỗ trợ Notifications API không
+if ('Notification' in window) {
+    // Yêu cầu quyền nếu chưa được cấp
+    if (Notification.permission === 'default') {
+        Notification.requestPermission().then(function(permission) {
+            if (permission !== 'granted') {
+                console.log('Người dùng từ chối nhận thông báo.');
+            }
+        });
+    }
+} else {
+    console.log('Trình duyệt không hỗ trợ Notifications API.');
 }
+
 // Hàm kiểm tra thông báo (đã định nghĩa ở trên)
 setInterval(checkTaskNotifications, 60000);
