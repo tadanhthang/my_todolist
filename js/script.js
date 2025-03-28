@@ -205,6 +205,22 @@ function checkTaskNotifications() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
+function hienThiThongBao() {
+    if (Notification.permission === 'granted') {
+        var thongBao = new Notification('Tiêu đề thông báo', {
+            body: 'Nội dung thông báo của bạn ở đây.',
+            icon: 'duong_dan_den_icon.png' // Đường dẫn đến icon nếu cần
+        });
+
+        thongBao.onclick = function() {
+            window.focus();
+            this.close();
+        };
+    } else {
+        console.log('Quyền thông báo chưa được cấp.');
+    }
+}
+
 // Kiểm tra mỗi giây cho test (thay vì 60s)
 setInterval(checkTaskNotifications, 1000);
 
