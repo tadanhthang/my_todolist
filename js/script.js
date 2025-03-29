@@ -235,17 +235,25 @@ document.addEventListener("click", function () {
 // Hàm hiển thị thông báo và phát âm thanh
 function hienThiThongBao(message) {
   if (Notification.permission === "granted") {
+    // Hiển thị thông báo
     var thongBao = new Notification("🔔 Nhắc nhở!", {
       body: message,
     });
 
-    thongBao.onclick = function () {
+    // Chỉ phát âm thanh nếu người dùng đã tương tác với trang
+    if (userInteracted) {
       var audio = new Audio(
         "audio/y2mate.com - NHẠC CHUÔNG TIẾNG CHUÔNG VÀO LỚP.mp3"
       );
       audio.play().catch(function (error) {
         console.error("Không thể phát âm thanh:", error);
       });
+    } else {
+      console.log("Người dùng chưa tương tác với trang, không thể phát âm thanh.");
+    }
+
+    // Xử lý khi người dùng nhấp vào thông báo
+    thongBao.onclick = function () {
       window.focus();
       this.close();
     };
