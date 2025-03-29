@@ -6,6 +6,12 @@ function addTask() {
   var taskDateTime = document.getElementById("taskDateTime");
   var taskList = document.getElementById("taskList");
 
+  var taskDateTimeValue = new Date(taskDateTime.value);
+  if (isNaN(taskDateTimeValue.getTime())) {
+    alert("Vui lòng nhập ngày giờ hợp lệ!");
+    return;
+  }
+
   if (taskInput.value.trim() !== "" && taskDateTime.value.trim() !== "") {
     // Tạo đối tượng công việc mới với trạng thái thông báo là false
     var newTask = {
@@ -91,25 +97,27 @@ function editTask(button) {
   var btnGroup = li.querySelector(".btn-group");
   btnGroup.innerHTML = "";
 
+  // Tìm chỉ số của công việc trong mảng tasks
+  var index = Array.from(li.parentNode.children).indexOf(li);
+
   // Tạo nút Lưu (Save)
   var saveBtn = document.createElement("button");
   // Gán lớp tùy chỉnh btn-save để có nền đỏ, viền và màu chữ trắng
   saveBtn.className = "btn btn-sm btn-save me-2";
   saveBtn.textContent = "Lưu";
   saveBtn.onclick = function () {
-    // Cập nhật nội dung nếu có giá trị hợp lệ
     if (textInput.value.trim() !== "") {
       taskTextElement.textContent = textInput.value;
+      tasks[index].text = textInput.value; // Cập nhật mảng tasks
     }
     if (dateInput.value.trim() !== "") {
       taskDateElement.textContent = new Date(dateInput.value).toLocaleString();
+      tasks[index].datetime = dateInput.value; // Cập nhật mảng tasks
     }
-    // Xóa container chỉnh sửa
+    localStorage.setItem("tasks", JSON.stringify(tasks)); // Lưu lại vào localStorage
     editContainer.remove();
-    // Hiển thị lại phần nội dung ban đầu
     taskTextElement.style.display = "";
     taskDateElement.style.display = "";
-    // Khôi phục lại nhóm nút gốc (nút Chỉnh sửa & Xóa)
     btnGroup.innerHTML = `
       <button onclick="editTask(this)" class="icon-btn">
           <i class="fa-solid fa-pen"></i>
@@ -147,8 +155,10 @@ function editTask(button) {
 }
 
 function removeTask(button) {
-  // Xóa phần tử <li> chứa công việc
   var li = button.closest("li");
+  var index = Array.from(li.parentNode.children).indexOf(li); // Lấy chỉ số của công việc
+  tasks.splice(index, 1); // Xóa khỏi mảng tasks
+  localStorage.setItem("tasks", JSON.stringify(tasks)); // Lưu lại vào localStorage
   li.remove();
 }
 
@@ -195,18 +205,15 @@ function checkTaskNotifications() {
     );
 
     if (now >= taskTime && task.notified === false) {
-      new Notification("Thông báo công việc", {
-        body: task.text + " đã đến giờ!",
-      });
-      task.notified = true;
+      console.log("Thông báo công việc:", task.text);
     }
   });
 
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
-// Kiểm tra mỗi giây cho test (thay vì 60s)
-setInterval(checkTaskNotifications, 1000);
+// Kiểm tra mỗi phút
+setInterval(checkTaskNotifications, 60000);
 
 // Kiểm tra và yêu cầu quyền thông báo
 if ("Notification" in window) {
@@ -216,6 +223,9 @@ if ("Notification" in window) {
         console.log("Người dùng từ chối nhận thông báo.");
       }
     });
+  }
+  if (Notification.permission !== "granted") {
+    alert("Bạn cần cấp quyền thông báo để sử dụng tính năng này.");
   }
 }
 
@@ -231,7 +241,9 @@ function hienThiThongBao() {
     var audio = new Audio(
       "audio/y2mate.com - NHẠC CHUÔNG TIẾNG CHUÔNG VÀO LỚP.mp3"
     ); // Đường dẫn đến file âm thanh
-    audio.play();
+    audio.play().catch(function (error) {
+      console.error("Không thể phát âm thanh:", error);
+    });
 
     // Xử lý khi người dùng bấm vào thông báo
     thongBao.onclick = function () {
@@ -245,6 +257,3 @@ function hienThiThongBao() {
 
 // Gọi hàm thông báo sau một khoảng thời gian (Ví dụ: 3 giây)
 setTimeout(hienThiThongBao, 3000);
-
-// Hàm kiểm tra thông báo (đã định nghĩa ở trên)
-setInterval(checkTaskNotifications, 60000);
