@@ -191,24 +191,20 @@ function saveTasksToFile() {
 function checkTaskNotifications() {
   var tasks = JSON.parse(localStorage.getItem("tasks")) || [];
   var now = new Date();
-  console.log("Now:", now);
 
   tasks.forEach(function (task, index) {
     var taskTime = new Date(task.datetime);
-    console.log(
-      "Task:",
-      task.text,
-      "Time:",
-      taskTime,
-      "Notified:",
-      task.notified
-    );
 
     if (now >= taskTime && task.notified === false) {
-      console.log("Thông báo công việc:", task.text);
+      // Gọi hàm hiển thị thông báo
+      hienThiThongBao(task.text);
+
+      // Đánh dấu công việc đã được thông báo
+      tasks[index].notified = true;
     }
   });
 
+  // Lưu lại trạng thái công việc vào localStorage
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
@@ -230,11 +226,11 @@ if ("Notification" in window) {
 }
 
 // Hàm hiển thị thông báo và phát âm thanh
-function hienThiThongBao() {
+function hienThiThongBao(message) {
   if (Notification.permission === "granted") {
     // Hiển thị thông báo
     var thongBao = new Notification("🔔 Nhắc nhở!", {
-      body: "Đây là nội dung thông báo.",
+      body: message, // Nội dung thông báo
     });
 
     // Phát âm thanh thông báo
@@ -256,4 +252,6 @@ function hienThiThongBao() {
 }
 
 // Gọi hàm thông báo sau một khoảng thời gian (Ví dụ: 3 giây)
-setTimeout(hienThiThongBao, 3000);
+setTimeout(function () {
+  hienThiThongBao("Đây là nội dung thông báo.");
+}, 3000);
