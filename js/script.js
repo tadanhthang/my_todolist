@@ -205,39 +205,33 @@ function checkTaskNotifications() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
+// Hàm hiển thị thông báo và phát âm thanh
 function hienThiThongBao() {
-    if (Notification.permission === 'granted') {
-        var thongBao = new Notification('Tiêu đề thông báo', {
-            body: 'Nội dung thông báo của bạn ở đây.',
-            icon: 'duong_dan_den_icon.png' // Đường dẫn đến icon nếu cần
-        });
+  if (Notification.permission === "granted") {
+    // Hiển thị thông báo
+    var thongBao = new Notification("🔔 Nhắc nhở!", {
+      body: "Đây là nội dung thông báo.",
+      icon: "icon.png", // Đường dẫn đến icon của bạn
+    });
 
-        thongBao.onclick = function() {
-            window.focus();
-            this.close();
-        };
-    } else {
-        console.log('Quyền thông báo chưa được cấp.');
-    }
+    // Phát âm thanh thông báo
+    var audio = new Audio(
+      "audio/y2mate.com - NHẠC CHUÔNG TIẾNG CHUÔNG VÀO LỚP.mp3"
+    ); // Đường dẫn đến file âm thanh
+    audio.play();
+
+    // Xử lý khi người dùng bấm vào thông báo
+    thongBao.onclick = function () {
+      window.focus();
+      this.close();
+    };
+  } else {
+    console.log("Bạn chưa cấp quyền thông báo.");
+  }
 }
 
-// Kiểm tra mỗi giây cho test (thay vì 60s)
-setInterval(checkTaskNotifications, 1000);
-
-// Yêu cầu quyền thông báo
-// Kiểm tra xem trình duyệt có hỗ trợ Notifications API không
-if ('Notification' in window) {
-    // Yêu cầu quyền nếu chưa được cấp
-    if (Notification.permission === 'default') {
-        Notification.requestPermission().then(function(permission) {
-            if (permission !== 'granted') {
-                console.log('Người dùng từ chối nhận thông báo.');
-            }
-        });
-    }
-} else {
-    console.log('Trình duyệt không hỗ trợ Notifications API.');
-}
+// Gọi hàm thông báo sau một khoảng thời gian (Ví dụ: 3 giây)
+setTimeout(hienThiThongBao, 3000);
 
 // Hàm kiểm tra thông báo (đã định nghĩa ở trên)
 setInterval(checkTaskNotifications, 60000);
