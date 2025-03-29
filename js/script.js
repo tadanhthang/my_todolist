@@ -25,8 +25,8 @@ function addTask() {
               <span><strong class="task-text">${newTask.text}</strong></span>
               <br>
               <small class="task-date">${new Date(
-                newTask.datetime
-              ).toLocaleString()}</small>
+      newTask.datetime
+    ).toLocaleString()}</small>
           </div>
           <div class="btn-group">
               <button onclick="editTask(this)" class="icon-btn">
@@ -203,6 +203,20 @@ function checkTaskNotifications() {
   });
 
   localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+// Kiểm tra mỗi giây cho test (thay vì 60s)
+setInterval(checkTaskNotifications, 1000);
+
+// Kiểm tra và yêu cầu quyền thông báo
+if ("Notification" in window) {
+  if (Notification.permission === "default") {
+    Notification.requestPermission().then(function (permission) {
+      if (permission !== "granted") {
+        console.log("Người dùng từ chối nhận thông báo.");
+      }
+    });
+  }
 }
 
 // Hàm hiển thị thông báo và phát âm thanh
