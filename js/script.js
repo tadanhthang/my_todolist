@@ -225,7 +225,6 @@ function hienThiThongBao() {
     // Hiển thị thông báo
     var thongBao = new Notification("🔔 Nhắc nhở!", {
       body: "Đây là nội dung thông báo.",
-      icon: "icon.png", // Đường dẫn đến icon của bạn
     });
 
     // Phát âm thanh thông báo
