@@ -225,24 +225,27 @@ if ("Notification" in window) {
   }
 }
 
+var userInteracted = false;
+
+// Đánh dấu khi người dùng tương tác với trang
+document.addEventListener("click", function () {
+  userInteracted = true;
+});
+
 // Hàm hiển thị thông báo và phát âm thanh
 function hienThiThongBao(message) {
   if (Notification.permission === "granted") {
-    // Hiển thị thông báo
     var thongBao = new Notification("🔔 Nhắc nhở!", {
-      body: message, // Nội dung thông báo
+      body: message,
     });
 
-    // Phát âm thanh thông báo
-    var audio = new Audio(
-      "audio/y2mate.com - NHẠC CHUÔNG TIẾNG CHUÔNG VÀO LỚP.mp3"
-    ); // Đường dẫn đến file âm thanh
-    audio.play().catch(function (error) {
-      console.error("Không thể phát âm thanh:", error);
-    });
-
-    // Xử lý khi người dùng bấm vào thông báo
     thongBao.onclick = function () {
+      var audio = new Audio(
+        "audio/y2mate.com - NHẠC CHUÔNG TIẾNG CHUÔNG VÀO LỚP.mp3"
+      );
+      audio.play().catch(function (error) {
+        console.error("Không thể phát âm thanh:", error);
+      });
       window.focus();
       this.close();
     };
@@ -255,3 +258,15 @@ function hienThiThongBao(message) {
 setTimeout(function () {
   hienThiThongBao("Đây là nội dung thông báo.");
 }, 3000);
+
+// Kích hoạt âm thanh khi nhấn nút
+document.getElementById("enableAudioButton").addEventListener("click", function () {
+  var audio = new Audio(
+    "audio/y2mate.com - NHẠC CHUÔNG TIẾNG CHUÔNG VÀO LỚP.mp3"
+  );
+  audio.play().then(function () {
+    console.log("Âm thanh đã được kích hoạt.");
+  }).catch(function (error) {
+    console.error("Không thể phát âm thanh:", error);
+  });
+});
