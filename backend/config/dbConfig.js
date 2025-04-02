@@ -7,8 +7,8 @@ const config = {
     server: process.env.DB_SERVER,
     database: process.env.DB_NAME,
     options: {
-        encrypt: true, // Sử dụng nếu SQL Server yêu cầu mã hóa
-        trustServerCertificate: true, // Bỏ qua chứng chỉ tự ký
+        encrypt: true, // Nếu sử dụng Azure
+        trustServerCertificate: true, // Nếu sử dụng máy cục bộ
     },
 };
 
@@ -19,26 +19,11 @@ const poolPromise = new sql.ConnectionPool(config)
         return pool;
     })
     .catch((err) => {
-        console.error// filepath: backend/config/dbConfig.js
-        const sql = require('mssql');
-        require('dotenv').config();
+        console.error('Database Connection Failed!', err);
+        process.exit(1); // Thoát chương trình nếu kết nối thất bại
+    });
 
-        const config = {
-            user: process.env.DB_USER,
-            password: process.env.DB_PASSWORD,
-            server: process.env.DB_SERVER,
-            database: process.env.DB_NAME,
-            options: {
-                encrypt: true, // Sử dụng nếu SQL Server yêu cầu mã hóa
-                trustServerCertificate: true, // Bỏ qua chứng chỉ tự ký
-            },
-        };
-
-        const poolPromise = new sql.ConnectionPool(config)
-            .connect()
-            .then((pool) => {
-                console.log('Connected to SQL Server');
-                return pool;
-            })
-            .catch((err) => {
-                console.error
+module.exports = {
+    sql,
+    poolPromise,
+};
