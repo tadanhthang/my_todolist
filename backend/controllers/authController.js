@@ -1,9 +1,6 @@
-const express = require('express');
 const { poolPromise } = require('../config/dbConfig');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-
-const router = express.Router();
 
 // Đăng ký
 const registerUser = async (req, res) => {
@@ -59,7 +56,4 @@ const loginUser = async (req, res) => {
     }
 };
 
-router.post('/register', registerUser);
-router.post('/login', loginUser);
-
-module.exports = router;
+module.exports = { registerUser, loginUser };
