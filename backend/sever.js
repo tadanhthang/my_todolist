@@ -14,7 +14,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Routes
-app.use('/api/auth', authRoutes);
+app.use('/api/auth', authRoutes); // Đảm bảo dòng này tồn tại
 app.use('/api/tasks', taskRoutes);
 
 // Start server
