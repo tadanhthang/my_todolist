@@ -16,11 +16,12 @@ const corsOptions = {
     credentials: true, // Nếu cần gửi cookie
 };
 app.use(cors(corsOptions));
-app.use(bodyParser.json());
+app.use(express.json()); // Xử lý dữ liệu JSON từ req.body
+app.use(bodyParser.urlencoded({ extended: true })); // Nếu bạn cần xử lý dữ liệu từ form
 
 // Routes
-app.use('/api', authRoutes);
-app.use('/api/tasks', taskRoutes);
+app.use('/api', require('./routes/authRoutes')); // Đảm bảo route được cấu hình đúng
+app.use('/api/tasks', require('./routes/taskRoutes'));
 
 // Start server
 app.listen(PORT, () => {

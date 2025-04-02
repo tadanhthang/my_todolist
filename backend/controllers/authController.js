@@ -14,8 +14,23 @@ const registerUser = async (req, res) => {
 
     try {
         const pool = await poolPromise;
+
+        // Kiểm tra xem email đã tồn tại hay chưa
+        const existingUser = await pool
+            .request()
+            .input('email', email)
+            .query('SELECT * FROM Users WHERE email = @email');
+
+        if (existingUser.recordset.length > 0) {
+            return res.status(400).json({
+                "error": "Email already exists"
+            });
+        }
+
+        // Mã hóa mật khẩu
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        // Chèn dữ liệu mới
         await pool
             .request()
             .input('username', username)

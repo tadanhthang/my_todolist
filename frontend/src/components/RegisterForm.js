@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { register } from '../services/authService';
 
-function RegisterForm() {
+function RegisterForm(onRegister) {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState(''); // Thêm state cho email
     const [password, setPassword] = useState('');
@@ -17,7 +17,11 @@ function RegisterForm() {
             await register({ username, email, password }); // Gửi email trong payload
             alert('Registration successful!');
         } catch (error) {
-            console.error('Error registering:', error.response?.data || error.message);
+            if (error.response && error.response.data && error.response.data.error) {
+                alert(error.response.data.error); // Hiển thị lỗi từ backend
+            } else {
+                console.error('Error registering:', error);
+            }
         }
     };
 

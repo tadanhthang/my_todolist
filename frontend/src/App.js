@@ -82,8 +82,8 @@ function App() {
       <h1>Task Management App</h1>
       {!isLoggedIn ? (
         <div>
-          <button onClick={() => setShowLogin(true)}>Login</button>
-          <button onClick={() => setShowRegister(true)}>Register</button>
+          <button onClick={() => { setShowLogin(true); setShowRegister(false); }}>Login</button>
+          <button onClick={() => { setShowRegister(true); setShowLogin(false); }}>Register</button>
         </div>
       ) : (
         <div>
