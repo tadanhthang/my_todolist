@@ -14,15 +14,16 @@ const getTasks = async (req, res) => {
 
 // Thêm công việc
 const addTask = async (req, res) => {
-    const { title, description } = req.body;
+    const { text, datetime, notified } = req.body; // Sử dụng các cột hiện có trong bảng
 
     try {
         const pool = await poolPromise;
         await pool
             .request()
-            .input('title', title)
-            .input('description', description)
-            .query('INSERT INTO Tasks (title, description) VALUES (@title, @description)');
+            .input('text', text)
+            .input('datetime', datetime)
+            .input('notified', notified)
+            .query('INSERT INTO Tasks (text, datetime, notified) VALUES (@text, @datetime, @notified)');
 
         res.status(201).json({ message: 'Task added successfully' });
     } catch (error) {
