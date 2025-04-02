@@ -6,10 +6,10 @@ const router = express.Router();
 
 // Đăng ký
 const registerUser = async (req, res) => {
-    const { username, password } = req.body;
+    const { username, email, password } = req.body;
 
-    if (!username || !password) {
-        return res.status(400).json({ error: 'Username and password are required' });
+    if (!username || !email || !password) {
+        return res.status(400).json({ error: 'Username, email, and password are required' });
     }
 
     try {
@@ -19,8 +19,9 @@ const registerUser = async (req, res) => {
         await pool
             .request()
             .input('username', username)
+            .input('email', email)
             .input('password', hashedPassword)
-            .query('INSERT INTO Users (username, password) VALUES (@username, @password)');
+            .query('INSERT INTO Users (username, email, password) VALUES (@username, @email, @password)');
 
         res.status(201).json({ message: 'User registered successfully' });
     } catch (error) {
