@@ -1,10 +1,16 @@
 const { poolPromise } = require('../config/dbConfig');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const express = require('express');
+const router = express.Router();
 
 // Đăng ký
 const registerUser = async (req, res) => {
-    const { email, password } = req.body;
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+        return res.status(400).json({ error: 'Username and password are required' });
+    }
 
     try {
         const pool = await poolPromise;
@@ -12,9 +18,9 @@ const registerUser = async (req, res) => {
 
         await pool
             .request()
-            .input('email', email)
+            .input('username', username)
             .input('password', hashedPassword)
-            .query('INSERT INTO Users (email, password) VALUES (@email, @password)');
+            .query('INSERT INTO Users (username, password) VALUES (@username, @password)');
 
         res.status(201).json({ message: 'User registered successfully' });
     } catch (error) {
@@ -23,37 +29,34 @@ const registerUser = async (req, res) => {
     }
 };
 
-// Đăng nhập
 const loginUser = async (req, res) => {
-    const { email, password } = req.body;
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+        return res.status(400).json({ error: 'Username and password are required' });
+    }
 
     try {
         const pool = await poolPromise;
-
         const result = await pool
             .request()
-            .input('email', email)
-            .query('SELECT * FROM Users WHERE email = @email');
+            .input('username', username)
+            .query('SELECT * FROM Users WHERE username = @username');
 
         const user = result.recordset[0];
-        if (!user) {
-            return res.status(404).json({ error: 'User not found' });
+        if (!user || !(await bcrypt.compare(password, user.password))) {
+            return res.status(401).json({ error: 'Invalid username or password' });
         }
 
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) {
-            return res.status(401).json({ error: 'Invalid credentials' });
-        }
-
-        const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, {
-            expiresIn: '1h',
-        });
-
+        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
         res.status(200).json({ message: 'Login successful', token });
     } catch (error) {
-        console.error('Error logging in user:', error);
+        console.error('Error logging in:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
+// Route đăng nhập
+router.post('/login', loginUser);
 
 module.exports = { registerUser, loginUser };

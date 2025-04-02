@@ -1,35 +1,38 @@
 import React, { useState } from 'react';
+import { login } from '../services/authService';
 
-function LoginForm({ onLogin }) {
-    const [email, setEmail] = useState('');
+function LoginForm() {
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        onLogin({ email, password });
+        try {
+            const response = await login({ username, password });
+            console.log('Login successful:', response);
+        } catch (error) {
+            console.error('Error logging in:', error.response?.data || error.message);
+        }
     };
 
     return (
-        <div className="popup">
-            <form onSubmit={handleSubmit}>
-                <h3>Login</h3>
-                <label>Email:</label>
-                <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                />
-                <label>Password:</label>
-                <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                />
-                <button type="submit">Login</button>
-            </form>
-        </div>
+        <form onSubmit={handleSubmit}>
+            <label>Username:</label>
+            <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+            />
+            <label>Password:</label>
+            <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+            />
+            <button type="submit">Login</button>
+        </form>
     );
 }
 

@@ -10,11 +10,16 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors());
+const corsOptions = {
+    origin: 'http://localhost:3000', // URL của frontend
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true, // Nếu cần gửi cookie
+};
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 // Routes
-app.use('/api/auth', authRoutes); // Đảm bảo dòng này tồn tại
+app.use('/api', authRoutes);
 app.use('/api/tasks', taskRoutes);
 
 // Start server
